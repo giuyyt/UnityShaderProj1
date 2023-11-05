@@ -10,6 +10,25 @@ fixed DrawCircle(float2 screenUV,float2 pos,float radius)
     return step(length(screenUV),radius);
 }
 
+fixed CircleRadius(float2 screenUV,float2 pos)
+{
+    return length(screenUV-pos);
+}
+
+fixed DrawRing(float2 screenUV,float2 pos,float radiusInner,float radiusOuter)
+{
+    fixed res=0;
+    fixed dis = CircleRadius(screenUV,pos);
+    if(dis<radiusOuter&&dis>radiusInner)
+    {
+        res = 1;
+    }
+
+    return res;
+}
+
+
+
 fixed CircleAngle(float2 screenUV,float2 pos)
 {
     screenUV-=pos;
@@ -123,11 +142,11 @@ fixed DrawGlowCircle(float2 screenUV,float2 pos,float radiusInner,float radiusOu
     fixed res;
     if(radiusNow<radiusInner)
     {
-        res = 1;
+        res = 0;
     }
     else if(radiusNow>=radiusInner&&radiusNow<radiusOuter)
     {
-        res = pow(lerp(1,0,(radiusNow - radiusInner)/(radiusOuter-radiusInner)),powerInner);
+        res = pow(lerp(0,1,(radiusNow - radiusInner)/(radiusOuter-radiusInner)),powerInner);
     }
     else if(radiusNow>=radiusOuter&&radiusNow<radiusNone)
     {
@@ -140,6 +159,7 @@ fixed DrawGlowCircle(float2 screenUV,float2 pos,float radiusInner,float radiusOu
 
     return res;
 }
+
 
 
 

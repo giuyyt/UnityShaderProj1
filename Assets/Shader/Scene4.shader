@@ -2,7 +2,7 @@
 
 // Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
-Shader "Custom/Scene3"
+Shader "Custom/Scene4"
 {
     Properties
     {
@@ -52,7 +52,7 @@ Shader "Custom/Scene3"
             }
 
 
-            fixed4 DrawConeByMultipleCircle(float2 screenUV,float2 pos,float radiusInit,float step,int numIn,float skew,int numDe)
+            fixed4 DrawConeByMultipleCircle(float2 screenUV,float2 pos,float radiusInit,float step,int numIn,int numDe,int numPos,float ringThickness)
             {
                 int num = ceil(radiusInit/step);
                 fixed radiusNow =  radiusInit;
@@ -63,16 +63,16 @@ Shader "Custom/Scene3"
                 for(int i=0;i<numIn;i++)
                 {
                     if(i>num)break;
-                    radiusNow = radiusNow-0.005;
-                    posNow.y = posNow.y+skew;
+                    radiusNow = radiusNow-step;
+                    posNow.y = posNow.y+numPos*step;
                     // DrawCircle(float2 screenUV,float2 pos,float radius)
                     // DrawGlowCircle(screenUV,posNow,radiusNow*0.2,radiusNow*0.95,radiusNow*1.05,20,20)
                     fixed4 _c8= DrawCircle(screenUV,posNow,radiusNow)*fixed4(Palette(
-                    CircleRadius(screenUV,radiusNow)+posNow.y*2+_Time.y*0.1,
-                    fixed3(0.5,0.5,0.5),
-                    fixed3(0.5,0.5,0.5),
-                    fixed3(2.0, 1.0, 0.0),
-                    fixed3(0.50, 0.20, 0.25)),1)+DrawRing(screenUV,posNow,radiusNow,radiusNow+0.001)*fixed4(0,0,0,1);
+                    CircleRadius(screenUV,radiusNow)+posNow.y*5,
+                    fixed3(0.8,0.5,0.4),
+                    fixed3(0.2,0.4,0.2),
+                    fixed3(2.0, 1.0, 1.0),
+                    fixed3(0.00, 0.25, 0.25)),1)+DrawRing(screenUV,posNow,radiusNow,radiusNow+ringThickness)*fixed4(0,0,0,1);
 
                     
 
@@ -115,39 +115,20 @@ Shader "Custom/Scene3"
 
                 
 
-                fixed2 posNow = fixed2(0.2,0.6);
-                fixed2 posNow2 = fixed2(0.3,0.32);
-                fixed2 posNow3 = fixed2(0.4,0.6);
-                fixed2 posNow4 = fixed2(0.4,0.85);
-                fixed2 posNow5 = fixed2(0.2,0.85);
-                fixed2 posNow6 = fixed2(0.3,0.73);
-                fixed2 posNow7 = fixed2(0.47,0.73);
-                fixed2 posNow8= fixed2(0.13,0.73);
 
+                fixed2 posNow1 = fixed2(0.3,0.3);
+                fixed2 posNow2 = fixed2(0.3,0.7);
                 
-                fixed radiusNow = 0.1;
                 fixed radiusNow2 = 0.2;
-                fixed radiusNow3 = 0.1;
-                fixed radiusNow4 = 0.08;
-                fixed radiusNow5 = 0.08;
-                fixed radiusNow6 = 0.03;
-                fixed radiusNow7 = 0.03;
-                fixed radiusNow8 = 0.03;
 
-                int numDe1 = 50;
-                int numDe2 = 75;
-                int numDe3 = 95;
+
+
 
                 
+                
+                fragColor = fragColor+DrawConeByMultipleCircle(screenUV,posNow1,radiusNow2,0.03,numIn,0,1,0.005);
+                 fragColor = fragColor+DrawConeByMultipleCircle(screenUV,posNow2,radiusNow2,0.03,numIn,0,-1,0.005);
 
-               fragColor = fragColor+ DrawConeByMultipleCircle(screenUV,posNow,radiusNow,0.003,numIn,0.007,numDe1);
-                fragColor = fragColor+DrawConeByMultipleCircle(screenUV,posNow2,radiusNow2,0.003,numIn,0.003,0);
-                fragColor = fragColor+DrawConeByMultipleCircle(screenUV,posNow3,radiusNow3,0.003,numIn,0.007,numDe1);
-                fragColor = fragColor+DrawConeByMultipleCircle(screenUV,posNow4,radiusNow4,0.003,numIn,0.003,numDe2);
-                fragColor = fragColor+DrawConeByMultipleCircle(screenUV,posNow5,radiusNow5,0.003,numIn,0.003,numDe2);
-                fragColor = fragColor+DrawConeByMultipleCircle(screenUV,posNow6,radiusNow6,0.003,numIn,0.01,numDe3);
-                fragColor = fragColor+DrawConeByMultipleCircle(screenUV,posNow7,radiusNow7,0.003,numIn,0.01,numDe3);
-                fragColor = fragColor+DrawConeByMultipleCircle(screenUV,posNow8,radiusNow8,0.003,numIn,0.01,numDe3);
 
                 //DrawCircle(float2 screenUV,float2 pos,float radius)
                 //DrawRing(screenUV,posNow5,radiusNow,radiusNow+0.1)*fixed4(1,1,1,1)
