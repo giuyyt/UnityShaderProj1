@@ -50,6 +50,8 @@ public class DemoPaletteScene : MonoBehaviour
 
     //Palette的Shader来自Shadertoy：
     //https://www.shadertoy.com/view/ll2GD3
+    //相关文章：
+    //https://iquilezles.org/articles/palettes
     // Update is called once per frame
     void Update()
     {

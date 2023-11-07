@@ -2,7 +2,7 @@
 
 // Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
-Shader "Custom/Scene4"
+Shader "Custom/Scene5"
 {
     Properties
     {
@@ -14,6 +14,7 @@ Shader "Custom/Scene4"
 
         Pass
         {
+            
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -27,8 +28,19 @@ Shader "Custom/Scene4"
             #include "Motion.cginc"
             #include "SimplexNoise.cginc"
             #include "Color.cginc"
+            #include "LineDraw.cginc"
 
-            int numIn;
+            float k1 = 0.3;
+            float b1 = 0.5;
+            float chanceK1 = 40;
+            float colorK1 = 7;
+            int isFirstLineShow = 1;
+
+            float k2 = 0.3;
+            float b2 = 0.5;
+            float chanceK2 = 40;
+            float colorK2 = 7;
+            int isSecondLineShow = 0;
 
             struct appdata
             {
@@ -109,7 +121,7 @@ Shader "Custom/Scene4"
 
 
                 fixed4 fragColor = fixed4(0,0,0,0);
-                fixed4 _layer0=fixed4(0.1,0.3,0.6,1);
+                fixed4 _layer0=fixed4(0,0,0,1);
                 
 
 
@@ -123,17 +135,44 @@ Shader "Custom/Scene4"
 
 
 
+                
+                
+
+                if(isFirstLineShow==1)
+                {
+                    fixed dis = GetLinePerpendicularDistance(screenUV,k1,b1);
+                    fixed chance = exp(-chanceK1*dis);
+                    if(chance>0.0001)
+                    {
+                        fixed randNum = permute(snoise(_Time.yzxy*0.3+screenUV.xyyx*10000));
+                        if(randNum<chance)
+                        {
+                            fragColor = fragColor+fixed4(exp(-colorK1*dis),1,1,1);
+                        }
+
+                    }
+                }
+                
+
+                if(isSecondLineShow==1)
+                {
+                    fixed dis2 = GetLinePerpendicularDistance(screenUV,k2,b2);
+                    fixed chance2 = exp(-chanceK2*dis2);
+                    if(chance2>0.001)
+                    {
+                        fixed randNum = permute(snoise(_Time.yzxy*0.3+screenUV.xyyx*10000));
+                        if(randNum<chance2)
+                        {
+                            fragColor = fragColor+fixed4(1,exp(-colorK2*dis2),1,1);
+                        }
+                    
+                    }
+
+                }
+                
 
                 
                 
-                fragColor = fragColor+DrawConeByMultipleCircle(screenUV,posNow1,radiusNow2,0.03,numIn,0,1,0.005);
-                 fragColor = fragColor+DrawConeByMultipleCircle(screenUV,posNow2,radiusNow2,0.03,numIn,0,-1,0.005);
-
-
-                //DrawCircle(float2 screenUV,float2 pos,float radius)
-                //DrawRing(screenUV,posNow5,radiusNow,radiusNow+0.1)*fixed4(1,1,1,1)
-                
-                fragColor = fragColor;
                 
                 
                
